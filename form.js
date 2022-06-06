@@ -8,24 +8,26 @@ const storeData = responses => {
   const name = responses[0];
   const dOB = responses[1];
   const hobbies = responses[2].split(',');
+  const phoneNo = responses[3];
+  const address = responses.slice(4).join(', ');
 
-  const information = { name, dOB, hobbies };
-  fs.writeFileSync('information.json', JSON.stringify(information), 'utf8');
+  const information = { name, dOB, hobbies, phoneNo, address };
+  fs.writeFileSync('informations.json', JSON.stringify(information), 'utf8');
 };
 
-const informationRegister = queries => {
+const informationRegister = informations => {
   const responses = [];
-  queries.currentQuery();
+  informations.currentQuery();
 
   process.stdin.on('data', (chunk) => {
     const response = chunk.trim();
-    if (isValidate(response, queries)) {
+    if (isValidate(response, informations)) {
       responses.push(response);
-      queries.nextQuery();
+      informations.nextQuery();
     } else {
-      queries.currentQuery();
+      informations.currentQuery();
     }
-    if (queries.index >= 3) {
+    if (informations.index >= informations.queries.length) {
       storeData(responses);
       process.stdin.emit('end');
       process.exit(0);
@@ -38,12 +40,15 @@ const informationRegister = queries => {
 };
 
 const main = () => {
-  const queries = new Query([
+  const informations = new Query([
     'Please Enter your Name : ',
     'Please Enter Your D.O.B(YYYY-MM-DD) : ',
-    'Please Enter Your hobbies : '
+    'Please Enter Your hobbies : ',
+    'Please Enter Your Phone Number : ',
+    'Please Enter Your Address Line 1 : ',
+    'Please Enter Your Address Line 2 : '
   ]);
-  informationRegister(queries);
+  informationRegister(informations);
 };
 
 main();
