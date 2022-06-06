@@ -1,5 +1,5 @@
 const displayError = () => {
-  console.log('Invalid Input');
+  console.error('Invalid Input');
 };
 
 const validateName = name => {
