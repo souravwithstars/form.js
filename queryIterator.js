@@ -6,7 +6,7 @@ class Query {
   currentQuery() {
     console.log(this.queries[this.index]);
   }
-  nextQueary() {
+  nextQuery() {
     this.index += 1;
     this.currentQuery();
   }
