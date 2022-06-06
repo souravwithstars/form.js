@@ -13,7 +13,6 @@ const getDate = dOB => dOB.slice(-2);
 
 const correctFormat = dOB => {
   if (dOB[4] !== '-' || dOB[7] !== '-') {
-    console.log('hello');
     return;
   }
   return dOB.length === 10;
