@@ -4,11 +4,7 @@ const displayError = () => {
 
 const validateName = name => {
   const regEx = /\d/;
-  if (name.length < 5 || regEx.test(name)) {
-    displayError();
-    return;
-  }
-  return true;
+  return name.length >= 5 && !regEx.test(name);
 };
 
 const getYear = dOB => dOB.slice(0, 4);
@@ -32,31 +28,33 @@ const isValidDate = dOB => {
 }
 
 const validateDOB = dOB => {
-  if (!correctFormat(dOB)) {
-    displayError();
-    return;
-  } else if (!isValidDate(dOB)) {
-    displayError();
-    return;
-  }
-  return true;
+  return correctFormat(dOB) && isValidDate(dOB);
 };
 
 const validateHobbies = hobbies => {
-  if (hobbies.length === 0) {
+  return hobbies.length !== 0;
+};
+
+const validatePhoneNo = phoneNo => {
+  return phoneNo.match(/^[\d]*$/) && phoneNo.length === 10;
+};
+
+const validateAddress = address => {
+  return address.length !== 0;
+};
+
+const isValidate = (response, queries) => {
+  const validateFunctions = [validateName, validateDOB, validateHobbies,
+    validatePhoneNo, validateAddress];
+
+  const index = queries.index;
+  const validator = index < 4 ? validateFunctions[index] : validateFunctions[4];
+
+  if (!validator(response)) {
     displayError();
     return;
   }
   return true;
-};
-
-const isValidate = (response, queries) => {
-  if (queries.index === 0) {
-    return validateName(response);
-  } else if (queries.index === 1) {
-    return validateDOB(response);
-  }
-  return validateHobbies(response);
 };
 
 exports.isValidate = isValidate;
