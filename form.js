@@ -1,11 +1,8 @@
 const fs = require('fs');
+const { Query } = require('./queryIterator.js');
+const { isValidate } = require('./validators.js');
 
 process.stdin.setEncoding('utf-8');
-
-const displayQuestion = (querries, index) => {
-  const question = querries[index];
-  console.log(question);
-};
 
 const storeData = responses => {
   const name = responses[0];
@@ -18,17 +15,21 @@ const storeData = responses => {
 
 const informationRegister = queries => {
   const responses = [];
-  let index = 0;
-  displayQuestion(queries, index);
-  index += 1;
+  queries.currentQuery();
 
   process.stdin.on('data', (chunk) => {
-    responses.push(chunk.trim());
-    if (index === queries.length) {
-      storeData(responses);
+    const response = chunk.trim();
+    if (isValidate(response, queries)) {
+      responses.push(response);
+      queries.nextQuery();
+    } else {
+      queries.currentQuery();
     }
-    console.log(queries[index]);
-    index += 1;
+    if (queries.index >= 3) {
+      storeData(responses);
+      process.stdin.emit('end');
+      process.exit(0);
+    }
   });
 
   process.stdin.on('end', () => {
@@ -37,10 +38,11 @@ const informationRegister = queries => {
 };
 
 const main = () => {
-  const queries = ['Please Enter your Name : ',
-    'Please Enter Your D.O.B : ',
+  const queries = new Query([
+    'Please Enter your Name : ',
+    'Please Enter Your D.O.B(YYYY-MM-DD) : ',
     'Please Enter Your hobbies : '
-  ];
+  ]);
   informationRegister(queries);
 };
 
